@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}SoTu{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/result.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="image-wrapper">
+        <div class="image-target" style="display:inline">
+            <img src="{{ url_for('static', filename='uploads/') }}{{ filename }}">
+            <div class="image-info">目标图片</div>
+        </div>
+        <div class="baidu_map" style="display:inline;margin-left: 20px;">
+            <a href="http://api.map.baidu.com/geocoder?address={{address.address}}&output=html' target='_blank">
+                <img style="margin:2px" width="400" height="300" src="http://api.map.baidu.com/staticimage?
+            width=400&height=300&zoom=18&center={{location}}"/>
+            </a>
+            <div class="baidumap-info">
+                <p>{{address.address}}{{address.direction}}{{address.distance}}</p>
+                <p>{{location}}</p>
+            </div>
+        </div>
+    {% if images %}
+        <div class="image-tip">
+            <span>结果图片 | 按相似度排序</span>
+        </div>
+        <div class="image-grid">
+        {% for image in images %}
+            <div class="image-item">
+                <!--<a href=""></a>-->
+                <img src="{{image.url}}">
+                <div class="image-overlay"></div>
+                <div class="images-info">
+                    <p>{{image.similarity}}</p>
+                    <p>{{image.label}}</p>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <h1>没有类似图片</h1>
+    {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/result.js') }}"></script>
+{% endblock %}
