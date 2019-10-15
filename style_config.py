@@ -11,9 +11,9 @@
 # Paths.
 import argparse
 
-result_dir = 'results'
-data_dir = 'datasets'
-cache_dir = 'cache'
+result_dir = 'stylegan/results'
+data_dir = 'stylegan/datasets'
+cache_dir = 'stylegan/cache'
 run_dir_ignore = ['results', 'datasets', 'cache']
 
 # experimental - replace Dense layers with TreeConnect
@@ -24,8 +24,8 @@ treeconnect_threshold = 1024
 # aligned 设置部分
 parser = argparse.ArgumentParser(description='Align faces from input images',
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--raw_dir', help='Directory with raw images for face alignment', default='raw_images')
-parser.add_argument('--aligned_dir', help='Directory for storing aligned images', default='aligned_images')
+parser.add_argument('--raw_dir', help='Directory with raw images for face alignment', default='stylegan/raw_images')
+parser.add_argument('--aligned_dir', help='Directory for storing aligned images', default='stylegan/aligned_images')
 parser.add_argument('--output_size', default=1024, help='The dimension of images for input to the model', type=int)
 parser.add_argument('--x_scale', default=1, help='Scaling factor for x dimension', type=float)
 parser.add_argument('--y_scale', default=1, help='Scaling factor for y dimension', type=float)
@@ -38,12 +38,12 @@ parser.add_argument('--find_faces', default=True, type=bool)
 
 # parser = argparse.ArgumentParser(description='Find latent representation of reference images using perceptual losses',
 #                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('--src_dir', help='Directory with images for encoding', default='aligned_images')
-parser.add_argument('--generated_images_dir', help='Directory for storing generated images', default='generated_images')
+parser.add_argument('--src_dir', help='Directory with images for encoding', default='stylegan/aligned_images')
+parser.add_argument('--generated_images_dir', help='Directory for storing generated images', default='stylegan/generated_images')
 parser.add_argument('--dlatent_dir', help='Directory for storing dlatent representations',
-                    default='latent_representations')
-parser.add_argument('--data_dir', default='data', help='Directory for storing optional models')
-parser.add_argument('--mask_dir', default='masks', help='Directory for storing optional masks')
+                    default='stylegan/latent_representations')
+parser.add_argument('--data_dir', default='stylegan/data', help='Directory for storing optional models')
+parser.add_argument('--mask_dir', default='stylegan/masks', help='Directory for storing optional masks')
 parser.add_argument('--load_last', default='', help='Start with embeddings from directory')
 parser.add_argument('--dlatent_avg', default='',
                     help='Use dlatent from file specified here for truncation instead of dlatent_avg from Gs')

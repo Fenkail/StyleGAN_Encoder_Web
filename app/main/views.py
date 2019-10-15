@@ -75,6 +75,7 @@ def result():
     filename2 = request.args.get('filename2')
     uri2 = os.path.join(current_app.config['UPLOAD_DIR'], filename2)
     result_path = 'stylegan/results/'
+
     setup.mixing_image(path_A= uri, path_B=uri2, result_path =result_path, flag = False)
 
     name_A = os.path.basename(os.path.splitext(uri)[0])
