@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}SoTu{% endblock %}
+{% block title %}StyleGAN_人脸生成{% endblock %}
 
 {% block styles %}
     {{ super() }}
@@ -16,7 +16,7 @@
                 <label for="fileimg2" id="upload">本地上传1</label>
                 <input type="file" name="fileimg2" id="fileimg2">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <button id="merge" value="1234" onclick="ronghe4()"></button>
+
             </form>
 {#            <form id="imgform2" method="POST" enctype="multipart/form-data" name="imgform2">#}
 {#                <label for="fileimg2" id="upload">本地上传</label>#}

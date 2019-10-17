@@ -5,7 +5,7 @@
 
 import os
 # import posixpath
-from stylegan import setup
+import setup
 # import re
 
 from flask import (current_app, flash, redirect, render_template, request,
@@ -31,7 +31,7 @@ def index():
     # imgform2 = ImgForm2()
     imgform = ImgForm()
     # urlform = URLForm()
-#TODO
+#TODO 图像的顺序问题
     # if imgform2.validate_on_submit():
     #     file2 = imgform2.fileimg2.data
     #     filename2 = secure_filename(file2.filename)
@@ -41,17 +41,19 @@ def index():
     #     print('filename2_1: {}'.format(filename2))
     if imgform.validate_on_submit():
         # file
-        file = imgform.fileimg.data
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(current_app.config['UPLOAD_DIR'], filename)
-        if not os.path.exists(filepath):
-            file.save(filepath)
+
         # file2
         file2 = imgform.fileimg2.data
         filename2 = secure_filename(file2.filename)
         filepath2 = os.path.join(current_app.config['UPLOAD_DIR'], filename2)
         if not os.path.exists(filepath2):
             file2.save(filepath2)
+
+        file = imgform.fileimg.data
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(current_app.config['UPLOAD_DIR'], filename)
+        if not os.path.exists(filepath):
+            file.save(filepath)
         print('filename: {}'.format(filename))
         print('filename2_2: {}'.format(filename2))
         return redirect(url_for('.result', filename=filename, filename2=filename2))
@@ -74,35 +76,36 @@ def result():
     uri = os.path.join(current_app.config['UPLOAD_DIR'], filename)
     filename2 = request.args.get('filename2')
     uri2 = os.path.join(current_app.config['UPLOAD_DIR'], filename2)
-    result_path = 'stylegan/results/'
+    result_path = 'results/'
 
-    setup.mixing_image(path_A= uri, path_B=uri2, result_path =result_path, flag = False)
+    # setup.mixing_image(path_A= uri, path_B=uri2, result_path =result_path, flag = False)
 
     name_A = os.path.basename(os.path.splitext(uri)[0])
     name_B = os.path.basename(os.path.splitext(uri2)[0])
 
-
-    result_url = os.path.join(current_app.config['UPLOAD_DIR'], result_path+name_A + '_' + name_B + '_mixing.png')
-
+    result_url = result_path+name_A + '_' + name_B + '_mixing.png'
 
     images = for_html_real.match(uri=result_url)
+    print(images)
     # from <lng>,<lat> to <lat>,<lng>
-    location = images[0]['label']
-    location_r = location.split(',')
-    location_r = location_r[1] + ',' + location_r[0]
-    print(location_r)
-    try:
-        address = request_for_location.main(location_r)
-    except:
-        address = None
-    print(address)
-    print(location)
+    # location = images[0]['label']
+    # location_r = location.split(',')
+    # location_r = location_r[1] + ',' + location_r[0]
+    # print(location_r)
+    # try:
+    #     address = request_for_location.main(location_r)
+    # except:
+    #     address = None
+    # print(address)
+    # print(location)
+    # images = []
     return render_template(
         'result.html',
         filename=filename,
+        filename2 = filename2,
         images=images,
-        address=address,
-        location=location
+        # address=address,
+        # location=location
         # labels=labels,
         # similarity=similarity
     )

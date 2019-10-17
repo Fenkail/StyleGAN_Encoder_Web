@@ -13,7 +13,7 @@ body {
 }
 
 .image-target img {
-    height: 300px;
+    height: 256px;
 }
 
 .image-target .image-info {
@@ -25,14 +25,14 @@ body {
 }
 
 
-.baidu_map .baidumap-info {
-    display: inline-block;
-    margin-left: 20px;
-    color: white;
-    font-size: 16px;
-    line-height: 20px;
-    vertical-align: top;
-}
+/*.baidu_map .baidumap-info {*/
+/*    display: inline-block;*/
+/*    margin-left: 20px;*/
+/*    color: white;*/
+/*    font-size: 16px;*/
+/*    line-height: 20px;*/
+/*    vertical-align: top;*/
+/*}*/
 
 .image-tip {
     color: white;
@@ -56,7 +56,7 @@ body {
     flex: 1 1 auto;
     min-width: 100%;
     max-width: 100%;
-    height: 150px;
+    height: 512px;
     vertical-align: middle;
 
     object-fit: cover;
@@ -74,22 +74,22 @@ body {
     margin-right: 10px;
 }
 
-.image-item .image-overlay {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Black see-through */
-    color: white;
-    text-align: center;
-    font-size: small;
-    opacity:0;
-    transition: .5s ease;
-}
-.image-item .images-info {
-    color: white;
-    font-size: 14px;
-    line-height: 16px;
-}
-.image-item:hover .image-overlay {
-    opacity: 1;
-}
+/*.image-item .image-overlay {*/
+/*    position: absolute;*/
+/*    bottom: 0;*/
+/*    width: 100%;*/
+/*    background: rgba(0, 0, 0, 0.5); !* Black see-through *!*/
+/*    color: white;*/
+/*    text-align: center;*/
+/*    font-size: small;*/
+/*    opacity:0;*/
+/*    transition: .5s ease;*/
+/*}*/
+/*.image-item .images-info {*/
+/*    color: white;*/
+/*    font-size: 14px;*/
+/*    line-height: 16px;*/
+/*}*/
+/*.image-item:hover .image-overlay {*/
+/*    opacity: 1;*/
+/*}*/

@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}SoTu{% endblock %}
-
+{% block title %}StyleGAN_人脸生成{% endblock %}
+<script>
+    document.write("<link rel='stylesheet' href='./src/styles/main.css?time="+Math.random()+"'>");
+</script>
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/result.css') }}">
@@ -11,32 +13,33 @@
     <div class="image-wrapper">
         <div class="image-target" style="display:inline">
             <img src="{{ url_for('static', filename='uploads/') }}{{ filename }}">
+            <img src="{{ url_for('static', filename='uploads/') }}{{ filename2 }}">
             <div class="image-info">目标图片</div>
         </div>
-        <div class="baidu_map" style="display:inline;margin-left: 20px;">
-            <a href="http://api.map.baidu.com/geocoder?address={{address.address}}&output=html' target='_blank">
-                <img style="margin:2px" width="400" height="300" src="http://api.map.baidu.com/staticimage?
-            width=400&height=300&zoom=18&center={{location}}"/>
-            </a>
-            <div class="baidumap-info">
-                <p>{{address.address}}{{address.direction}}{{address.distance}}</p>
-                <p>{{location}}</p>
-            </div>
-        </div>
+{#        <div class="baidu_map" style="display:inline;margin-left: 20px;">#}
+{#            <a href="http://api.map.baidu.com/geocoder?address={{address.address}}&output=html' target='_blank">#}
+{#                <img style="margin:2px" width="400" height="300" src="http://api.map.baidu.com/staticimage?#}
+{#            width=400&height=300&zoom=18&center={{location}}"/>#}
+{#            </a>#}
+{#            <div class="baidumap-info">#}
+{#                <p>{{address.address}}{{address.direction}}{{address.distance}}</p>#}
+{#                <p>{{location}}</p>#}
+{#            </div>#}
+{#        </div>#}
     {% if images %}
         <div class="image-tip">
-            <span>结果图片 | 按相似度排序</span>
+            <span>结果图片: </span>
         </div>
         <div class="image-grid">
         {% for image in images %}
             <div class="image-item">
                 <!--<a href=""></a>-->
                 <img src="{{image.url}}">
-                <div class="image-overlay"></div>
-                <div class="images-info">
-                    <p>{{image.similarity}}</p>
-                    <p>{{image.label}}</p>
-                </div>
+{#                <div class="image-overlay"></div>#}
+{#                <div class="images-info">#}
+{#                    <p>{{image.similarity}}</p>#}
+{#                    <p>{{image.label}}</p>#}
+{#                </div>#}
             </div>
         {% endfor %}
         </div>
@@ -48,5 +51,8 @@
 
 {% block scripts %}
     {{ super() }}
+    <script>
+            document.write("<script type='text/javascript' src='./src/scripts/video.js?time="+Math.random()+"'></"+"script"+">")
+     </script>
     <script src="{{ url_for('static', filename='js/result.js') }}"></script>
 {% endblock %}

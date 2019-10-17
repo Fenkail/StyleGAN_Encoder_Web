@@ -17,67 +17,60 @@ def split_to_batches(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def styleGAN_encoder(args,path_A, path_B):
+def styleGAN_encoder(path_A, path_B):
     start_ = time.time()
-    args.decay_steps *= 0.01 * args.iterations # Calculate steps as a percent of total iterations
+    decay_steps =10
+    decay_steps *= 0.01 * 100 # Calculate steps as a percent of total iterations
 
-    src_dir = args.src_dir
+    src_dir = 'aligned_images'
     name_A = src_dir+'/%s.png' %os.path.basename(os.path.splitext(path_A)[0])
     name_B = src_dir+'/%s.png' %os.path.basename(os.path.splitext(path_B)[0])
     ref_images = [name_A,name_B]
     ref_images = list(filter(os.path.isfile, ref_images))
 
 
-    os.makedirs(args.data_dir, exist_ok=True)
-    os.makedirs(args.dlatent_dir, exist_ok=True)
+    os.makedirs('data', exist_ok=True)
+    os.makedirs('masks', exist_ok=True)
 
     # Initialize generator and perceptual model
     tflib.init_tf()
-    with dnnlib.util.open_url(args.model_url, cache_dir=config.cache_dir) as f:
+    with dnnlib.util.open_url('https://drive.google.com/uc?id=1MEGjdvVpUsu1jB4zrXZN7Y4kBBOzizDQ', cache_dir='cache') as f:
         generator_network, discriminator_network, Gs_network = pickle.load(f)
 
-    generator = Generator(Gs_network, args.batch_size, clipping_threshold=args.clipping_threshold, tiled_dlatent=args.tile_dlatents, model_res=args.model_res, randomize_noise=args.randomize_noise)
+    generator = Generator(Gs_network, 1, clipping_threshold=2.0, tiled_dlatent=False, model_res=1024, randomize_noise=False)
+    print(generator.model_scale)
 
     perc_model = None
-    if (args.use_lpips_loss > 0.00000001):
-        with dnnlib.util.open_url('https://drive.google.com/uc?id=1N2-m9qszOeVC9Tq77WxsLnuWwOedQiD2', cache_dir=config.cache_dir) as f:
+    if (100 > 0.00000001):
+        with dnnlib.util.open_url('https://drive.google.com/uc?id=1N2-m9qszOeVC9Tq77WxsLnuWwOedQiD2', cache_dir='cache') as f:
             perc_model =  pickle.load(f)
-    perceptual_model = PerceptualModel(args, perc_model=perc_model, batch_size=args.batch_size)
+    perceptual_model = PerceptualModel(perc_model=perc_model, batch_size=1)
     perceptual_model.build_perceptual_model(generator)
 
     ff_model = None
 
     # Optimize (only) dlatents by minimizing perceptual loss between reference and generated images in feature space
-    for images_batch in tqdm(split_to_batches(ref_images, args.batch_size), total=len(ref_images)//args.batch_size):
+    for images_batch in tqdm(split_to_batches(ref_images, 1), total=len(ref_images)//1):
         names = [os.path.splitext(os.path.basename(x))[0] for x in images_batch]
 
         perceptual_model.set_reference_images(images_batch)
         dlatents = None
-        if (args.load_last != ''): # load previous dlatents for initialization
-            for name in names:
-                dl = np.expand_dims(np.load(os.path.join(args.load_last, f'{name}.npy')),axis=0)
-                if (dlatents is None):
-                    dlatents = dl
-                else:
-                    dlatents = np.vstack((dlatents,dl))
-        else:
-            if (ff_model is None):
-                if os.path.exists(args.load_resnet):
-                    print("Loading ResNet Model:")
-                    ff_model = load_model(args.load_resnet)
-                    from keras.applications.resnet50 import preprocess_input
-            if (ff_model is None):
-                if os.path.exists(args.load_effnet):
-                    import efficientnet
-                    print("Loading EfficientNet Model:")
-                    ff_model = load_model(args.load_effnet)
-                    from efficientnet import preprocess_input
-            if (ff_model is not None): # predict initial dlatents with ResNet model
-                dlatents = ff_model.predict(preprocess_input(load_images(images_batch,image_size=args.resnet_image_size)))
+
+
+        if (ff_model is None):
+            if os.path.exists('data/finetuned_resnet.h5'):
+                print("Loading ResNet Model:")
+                ff_model = load_model('data/finetuned_resnet.h5')
+                from keras.applications.resnet50 import preprocess_input
+
+
+        if (ff_model is not None): # predict initial dlatents with ResNet model
+            dlatents = ff_model.predict(preprocess_input(load_images(images_batch,image_size=256)))
         if dlatents is not None:
             generator.set_dlatents(dlatents)
-        op = perceptual_model.optimize(generator.dlatent_variable, iterations=args.iterations)
-        pbar = tqdm(op, leave=False, total=args.iterations)
+
+        op = perceptual_model.optimize(generator.dlatent_variable, iterations=100)
+        pbar = tqdm(op, leave=False, total=100)
 
         best_loss = None
         best_dlatent = None
@@ -91,16 +84,23 @@ def styleGAN_encoder(args,path_A, path_B):
             generator.stochastic_clip_dlatents()
         print(" ".join(names), " Loss {:.4f}".format(best_loss))
 
-
+        print(best_dlatent)
 
         # Generate images from found dlatents and save them
         generator.set_dlatents(best_dlatent)
         generated_images = generator.generate_images()
         generated_dlatents = generator.get_dlatents()
+        print(generator.initial_dlatents)
+
+
+
         for img_array, dlatent, img_name in zip(generated_images, generated_dlatents, names):
-            np.save(os.path.join(args.dlatent_dir, f'{img_name}.npy'), dlatent)
+            np.save(os.path.join('latent_representations', f'{img_name}.npy'), dlatent)
 
         generator.reset_dlatents()
+
     end_ = time.time()
     logging.info('The time it takes for the StyleGAN Encoder: %.2fs' % (end_ - start_))
 
+if __name__ == '__main__':
+    styleGAN_encoder('22','26')

@@ -86,6 +86,7 @@ def style_mixing(path_A, path_B, result_path, flag):
     name_A = os.path.basename(os.path.splitext(path_A)[0])
     name_B = os.path.basename(os.path.splitext(path_B)[0])
 
+
     src_dlatents = np.load('latent_representations/'+name_A+'.npy').reshape(1, 18, 512)  # [seed, layer, component]
     dst_dlatents = np.load('latent_representations/'+name_B+'.npy').reshape(1, 18, 512)  # [seed, layer, component]
 

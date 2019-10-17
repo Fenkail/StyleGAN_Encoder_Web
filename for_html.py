@@ -96,33 +96,35 @@ class for_html(object):
 
     # get match for query image
     def match(self, uri, top_k=config_retrieval['top_k']):
-        image_feature = self.delf.extract_feature_singleimage(uri)
+        # image_feature = self.delf.extract_feature_singleimage(uri)
+        #
+        # if config_retrieval['similarity_kind'] == 'cosine':
+        #     from similarity import cos_similarity
+        #     all_pd = cos_similarity.main(
+        #         image_feature,
+        #         self.feature_npy_path,
+        #         self.image_path_label_csv_path
+        #     )
+        #
+        # if all_pd is None:
+        #     return [], [], []
+        # top_k_pd = all_pd.iloc[0: top_k]
+        # images_list = list(top_k_pd['image_path'])
+        # label_list = list(top_k_pd['label'])
+        # similarity_list = list(top_k_pd['similarity'])
 
-        if config_retrieval['similarity_kind'] == 'cosine':
-            from similarity import cos_similarity
-            all_pd = cos_similarity.main(
-                image_feature,
-                self.feature_npy_path,
-                self.image_path_label_csv_path
-            )
-
-        if all_pd is None:
-            return [], [], []
-        top_k_pd = all_pd.iloc[0: top_k]
-        images_list = list(top_k_pd['image_path'])
-        label_list = list(top_k_pd['label'])
-        similarity_list = list(top_k_pd['similarity'])
-
-        for i in range(0, len(images_list)):
-            images_list[i] = config_retrieval['server'] + re.sub(config_retrieval['images_root_dir'], '', images_list[i])
-
+        # for i in range(0, len(images_list)):
+        images_list = []
+        images_list.append(config_retrieval['server'] + re.sub(config_retrieval['images_root_dir'], '', uri))
+        # images_list.append(config_retrieval['server'] + re.sub(config_retrieval['images_root_dir'], '', './results/22_26_mixing.png'))
+        print(images_list)
         # images = images_class(config_retrieval['images_root_dir'], images_list)
         images = []
         for i in range(0, len(images_list)):
             temp_dict = dict()
             temp_dict['url'] = images_list[i]
-            temp_dict['similarity'] = round(similarity_list[i], 4)
-            temp_dict['label'] = label_list[i]
+            # temp_dict['similarity'] = round(similarity_list[i], 4)
+            # temp_dict['label'] = label_list[i]
             images.append(temp_dict)
         return images
 
