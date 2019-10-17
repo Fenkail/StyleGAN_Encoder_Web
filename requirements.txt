@@ -1,4 +1,4 @@
-flask == 0.12.4
+flask == 1.0
 flask-wtf == 0.14.2
 jinja2 == 2.10
 matplotlib >= 3.0.0
